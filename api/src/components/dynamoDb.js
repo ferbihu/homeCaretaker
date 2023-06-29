@@ -3,7 +3,8 @@ const {
     QueryCommand,
     PutItemCommand,
     GetItemCommand,
-    DeleteItemCommand
+    DeleteItemCommand,
+    UpdateItemCommand
   } = require('@aws-sdk/client-dynamodb');
   
   const dynamoClient = new DynamoDBClient({
@@ -18,5 +19,6 @@ const {
     QueryCommand,
     PutItemCommand,
     GetItemCommand,
-    DeleteItemCommand
+    DeleteItemCommand,
+    UpdateItemCommand
   };
