@@ -1,4 +1,4 @@
-const serviceCarevigerProfile = require('../services/createCareviger');
+const serviceCarevigerProfile = require('../services/caraverigerProfile');
 
 
 const postCaravigerProfile = async(req,res) =>{
@@ -30,6 +30,7 @@ const getCareviger =  async(req,res) =>{
     try{
         const {email} = req.params;
         const data = await serviceCarevigerProfile.getCareviger(email);
+        if(!data.email) return res.status(404).json({msg:"user doesnt exist"});
         res.status(200).send(data);
     }
     catch(error){

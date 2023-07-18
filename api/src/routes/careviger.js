@@ -6,7 +6,7 @@ const {postCaravigerProfile, getCareviger, deleteCareviger, updateCareviger} = r
 const router = Router();
 
 router.post('/create_profile', postCaravigerProfile);
-router.get('/careviger_id/:email', getCareviger);
+router.get('/:email', getCareviger);
 router.put('/profile_change/:email', updateCareviger);
 router.delete('/profile_careviger/:email', deleteCareviger);
 
