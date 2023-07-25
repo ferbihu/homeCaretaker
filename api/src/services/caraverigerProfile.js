@@ -7,29 +7,52 @@ const createCaravigerProfile = async(data) =>{
             Item : {
                 email : {S: data.email},
                 name: {S: data.name},
-                lastName: {S: data.lastName}
+                lastName: {S: data.lastName},
+                descriptionJob: {S: data.descriptionJob},
+                dateAvailable: {S: data.dateAvailable},
+                phone: {S: data.phone},
+                socialMedia: {M:{
+                ...(data.socialMedia.facebook && {facebook: {S: data.socialMedia.facebook}}), 
+                ...(data.socialMedia.instagram && {instagram: {S: data.socialMedia.instagram}}), 
+                ...(data.socialMedia.twitter && {twitter: {S: data.socialMedia.twitter}})
+                }}
             }
+
         }
         const commnad = new PutItemCommand(params);
         await dynamoClient.send(commnad);
 };
 
 const updateCareviger = async(data) =>{
+    const updateBody = `set ${data.name ? `#n = :n,` : "" } ${data.lastName ? `#l = :l,` : "" } ${data.descriptionJob ? `#descriptionJob = :descriptionJob,` : "" } ${data.dateAvailable ? `#dAvailable = :dAvailable,` : "" } ${data.phone ? `#phone = :phone,` : "" } ${data.socialMedia ? `#socialMedia = :socialMedia` : "" }`
     const input = {
         TableName: process.env.TABLE_NAME_DYNAMODB,
         Key: {
             email: {S: data.email}       
         },
-        UpdateExpression: "set #n = :n, #l = :l",
+        UpdateExpression: updateBody,
         ExpressionAttributeValues: {
-          ':n' : {S: data.name},
-          ':l' : {S: data.lastName}
+          ...(data.name && {':n' : {S: data.name}}),
+          ...(data.lastName && {':l' : {S: data.lastName}}),
+          ...(data.descriptionJob && { ':descriptionJob': {S: data.descriptionJob}}),
+          ...(data.dateAvailable && {':dAvailable' : {S: data.dateAvailable}}),
+          ...(data.phone && {':phone': {S: data.phone}}),
+          ...(data.socialMedia && {':socialMedia': {M:{
+            ...(data.socialMedia.facebook && {facebook: {S: data.socialMedia.facebook}}), 
+            ...(data.socialMedia.instagram && {instagram: {S: data.socialMedia.instagram}}), 
+            ...(data.socialMedia.twitter && {twitter: {S: data.socialMedia.twitter}})
+            }}})
         },
         ExpressionAttributeNames: {
-            "#n": "name",
-            "#l" : "lastName"
+            ...(data.name && {"#n": "name"}),
+            ...(data.lastName && {"#l" : "lastName"}),
+            ...(data.descriptionJob && {"#descriptionJob": "descriptionJob"}),
+            ...(data.dateAvailable && {"#dAvailable":"dateAvailable"}),
+            ...(data.phone && {"#phone":"phone"}),
+            ...(data.socialMedia && { "#socialMedia": "socialMedia"})
         }
     }
+    console.log(input)
     const command = new UpdateItemCommand(input);
     const response = await dynamoClient.send(command);
     return (response, 'user updated successfully');

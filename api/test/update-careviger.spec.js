@@ -1,5 +1,5 @@
-const { server } = require('../index');
 const request = require('supertest');
+const { server } = require('../index');
 
 describe('/profile_change/:email', ()=>{
     afterAll(async()=>{
@@ -7,13 +7,32 @@ describe('/profile_change/:email', ()=>{
     });
 
     it('should return 200 when user change cualquier dato de su perfil', async()=>{
-        // const body = {
-        //     name: "ari"
-        // }
-        const response = await request(server).post('/careviger/profile_change/bihu@gmail.com').send({name:'ari'});
-        console.log(response);
-        //expect(response.data).toMatchObject({name:'ari'});
-        // expect(response.text).toBe("`user ariel@gmail.com updated succesfully`")
+        const body = {
+            "name" : "ADENIMBA",
+            "lastName" : "klodo",
+            "email": "calobimba@gmail.com",
+            "phone": "123123",
+            "descriptionJob": "olguista",
+            "dateAvailable": "25032023",
+            "socialMedia": {
+                "facebook" : "https://joi.dev/api/?v=17.9.1#date",
+                "twitter": "https://joi.dev/api/?v=17.9.1#date",
+                "instagram":"https://joi.dev/api/?v=17.9.1#date"
+            }
+        
+        }
+        const response = await request(server).put('/careviger/profile_change/klobimba@gmail.com').send(body);
+        expect(response.status).toBe(200)
+
+    });
+    it('should return 200 when user updated the social media facebook', async()=>{
+        const body = {
+            "socialMedia": {
+                "facebook" : "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html"
+            }
+        }
+        const response = await request(server).put('/careviger/profile_change/klobimba@gmail.com').send(body);
+        expect(response.status).toBe(200)
 
     });
 });
