@@ -20,7 +20,7 @@ const createCaravigerProfile = async(data) =>{
 
         }
         const commnad = new PutItemCommand(params);
-        await dynamoClient.send(commnad);
+        return await dynamoClient.send(commnad);
 };
 
 const updateCareviger = async(data) =>{
@@ -52,7 +52,6 @@ const updateCareviger = async(data) =>{
             ...(data.socialMedia && { "#socialMedia": "socialMedia"})
         }
     }
-    console.log(input)
     const command = new UpdateItemCommand(input);
     const response = await dynamoClient.send(command);
     return (response, 'user updated successfully');

@@ -16,6 +16,8 @@ const postCaravigerProfile = async(req,res) =>{
 const updateCareviger = async(req,res) =>{
     try{
         const {email} = req.params;
+        const user = await serviceCarevigerProfile.getCareviger(email); 
+        if(user.email === undefined) return res.status(404).json({msg:"user doesnt exist"});
         const {name,lastName,descriptionJob, dateAvailable, phone, socialMedia} = req.body;
         await serviceCarevigerProfile.updateCareviger({email, name,lastName, descriptionJob, dateAvailable, phone, socialMedia});
         res.status(200).json(`user ${email} updated succesfully`);
