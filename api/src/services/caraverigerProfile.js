@@ -1,5 +1,5 @@
-const {PutItemCommand, GetItemCommand, DeleteItemCommand, UpdateItemCommand, dynamoClient} = require('../components/dynamoDb');
-const {mapGetCareviger} = require('../mappers');
+const {PutItemCommand, GetItemCommand, DeleteItemCommand, UpdateItemCommand, ScanCommand, dynamoClient} = require('../components/dynamoDb');
+const {mapGetCareviger, mapSearchCareviger} = require('../mappers');
 
 const createCaravigerProfile = async(data) =>{
         const params = {
@@ -9,7 +9,8 @@ const createCaravigerProfile = async(data) =>{
                 name: {S: data.name},
                 lastName: {S: data.lastName},
                 descriptionJob: {S: data.descriptionJob},
-                dateAvailable: {S: data.dateAvailable},
+                dateAvailableFrom: {S: data.dateAvailableFrom},
+                dateAvailableUntil: {S: data.dateAvailableUntil},
                 phone: {S: data.phone},
                 socialMedia: {M:{
                 ...(data.socialMedia.facebook && {facebook: {S: data.socialMedia.facebook}}), 
@@ -24,7 +25,7 @@ const createCaravigerProfile = async(data) =>{
 };
 
 const updateCareviger = async(data) =>{
-    const updateBody = `set ${data.name ? `#n = :n,` : "" } ${data.lastName ? `#l = :l,` : "" } ${data.descriptionJob ? `#descriptionJob = :descriptionJob,` : "" } ${data.dateAvailable ? `#dAvailable = :dAvailable,` : "" } ${data.phone ? `#phone = :phone,` : "" } ${data.socialMedia ? `#socialMedia = :socialMedia` : "" }`
+    const updateBody = `set ${data.name ? `#n = :n,` : "" } ${data.lastName ? `#l = :l,` : "" } ${data.descriptionJob ? `#descriptionJob = :descriptionJob,` : "" } ${data.dateAvailableFrom ? `#dAvailableF = :dAvailableF,` : "" } ${data.dateAvailableUntil ? `#dAvailableU = :dAvailableU,` : "" } ${data.phone ? `#phone = :phone,` : "" } ${data.socialMedia ? `#socialMedia = :socialMedia` : "" }`
     const input = {
         TableName: process.env.TABLE_NAME_DYNAMODB,
         Key: {
@@ -35,7 +36,8 @@ const updateCareviger = async(data) =>{
           ...(data.name && {':n' : {S: data.name}}),
           ...(data.lastName && {':l' : {S: data.lastName}}),
           ...(data.descriptionJob && { ':descriptionJob': {S: data.descriptionJob}}),
-          ...(data.dateAvailable && {':dAvailable' : {S: data.dateAvailable}}),
+          ...(data.dateAvailableFrom && {':dAvailableF' : {S: data.dateAvailableFrom}}),
+          ...(data.dateAvailableUntil && {':dAvailableU':{S: data.dateAvailableUntil}}),
           ...(data.phone && {':phone': {S: data.phone}}),
           ...(data.socialMedia && {':socialMedia': {M:{
             ...(data.socialMedia.facebook && {facebook: {S: data.socialMedia.facebook}}), 
@@ -47,7 +49,8 @@ const updateCareviger = async(data) =>{
             ...(data.name && {"#n": "name"}),
             ...(data.lastName && {"#l" : "lastName"}),
             ...(data.descriptionJob && {"#descriptionJob": "descriptionJob"}),
-            ...(data.dateAvailable && {"#dAvailable":"dateAvailable"}),
+            ...(data.dateAvailableFrom && {"#dAvailableF":"dateAvailableF"}),
+            ...(data.dateAvailableUntil && {"#dAvailableU":"dateAvailableU"}),
             ...(data.phone && {"#phone":"phone"}),
             ...(data.socialMedia && { "#socialMedia": "socialMedia"})
         }
@@ -80,4 +83,28 @@ const deleteCareviger = async(email)=>{
     const response = await dynamoClient.send(command);
     return (response, "user delete successfully");
 }
-module.exports= {createCaravigerProfile, getCareviger, deleteCareviger, updateCareviger}
+
+const searchCarevigerByDateAvailable = async(dateAvailableFrom,dateAvailableUntil)=>{
+    const params = {    
+    ExpressionAttributeNames: {
+        "#dAvailableF":"dateAvailableFrom",
+        "#dAvailableU":"dateAvailableUntil",
+        "#email":"email",
+        "#n":"name",
+        "#l":"lastName",
+        "#phone":"phone"
+    },
+    ExpressionAttributeValues: {
+        ":dAvailableF" : {S: dateAvailableFrom},
+        ":dAvailableU" : {S:dateAvailableUntil}
+    },
+    FilterExpression: "#dAvailableF = :dAvailableF AND #dAvailableU = :dAvailableU",
+    ProjectionExpression: "#dAvailableF, #dAvailableU, #email, #n, #l, #phone",
+    TableName: process.env.TABLE_NAME_DYNAMODB
+    }
+    const command = new ScanCommand(params);
+    const response = await dynamoClient.send(command);
+    return mapSearchCareviger(response);
+}
+
+module.exports= {createCaravigerProfile, getCareviger, deleteCareviger, updateCareviger, searchCarevigerByDateAvailable}

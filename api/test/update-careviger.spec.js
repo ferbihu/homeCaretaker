@@ -14,7 +14,8 @@ describe('/profile_change/:email', ()=>{
             "lastName" : "klodo",
             "phone": "123123",
             "descriptionJob": "olguista",
-            "dateAvailable": "25032023",
+            "dateAvailableFrom": "25-03-2023",
+            "dateAvailableUntil": "30-10-2024",
             "socialMedia": {
                 "facebook" : "https://joi.dev/api/?v=17.9.1#date",
                 "twitter": "https://joi.dev/api/?v=17.9.1#date",
@@ -40,7 +41,8 @@ describe('/profile_change/:email', ()=>{
     it('should return 404 when user no exist in db', async()=>{
         const body = {
             "descriptionJob": "olguista",
-            "dateAvailable": "25032023"
+            "dateAvailableFrom": "25-03-2023",
+            "dateAvailableUntil": "30-10-2024"
         }
         const response = await request(server).put('/careviger/profile_change/doesntcareviger@gmail.com').send(body);
         expect(response.status).toBe(404)

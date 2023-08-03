@@ -18,8 +18,8 @@ const updateCareviger = async(req,res) =>{
         const {email} = req.params;
         const user = await serviceCarevigerProfile.getCareviger(email); 
         if(user.email === undefined) return res.status(404).json({msg:"user doesnt exist"});
-        const {name,lastName,descriptionJob, dateAvailable, phone, socialMedia} = req.body;
-        await serviceCarevigerProfile.updateCareviger({email, name,lastName, descriptionJob, dateAvailable, phone, socialMedia});
+        const {name,lastName,descriptionJob, dateAvailableFrom, dateAvailableUntil, phone, socialMedia} = req.body;
+        await serviceCarevigerProfile.updateCareviger({email, name,lastName, descriptionJob, dateAvailableFrom, dateAvailableUntil, phone, socialMedia});
         res.status(200).json(`user ${email} updated succesfully`);
     }
     catch(error){
@@ -53,4 +53,16 @@ const deleteCareviger = async(req,res) =>{
     }
 };
 
-module.exports = {postCaravigerProfile, getCareviger, deleteCareviger, updateCareviger}
+const searchCarevigerByDateAvailable = async(req,res)=>{
+    try{
+        const {dateAvailableFrom, dateAvailableUntil} = req.body;
+        const carevigerSearch = await serviceCarevigerProfile.searchCarevigerByDateAvailable(dateAvailableFrom, dateAvailableUntil);
+        res.status(200).send(carevigerSearch);
+    }
+    catch(error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+module.exports = {postCaravigerProfile, getCareviger, deleteCareviger, updateCareviger, searchCarevigerByDateAvailable}

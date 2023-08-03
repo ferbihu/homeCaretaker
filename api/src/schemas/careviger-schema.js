@@ -5,7 +5,8 @@ const carevigerSchema = Joi.object({
     lastName: Joi.string().required(),
     email: Joi.string().email({ minDomainSegments: 2 }),
     descriptionJob: Joi.string(),
-    dateAvailable: Joi.string(),
+    dateAvailableFrom: Joi.string(),
+    dateAvailableUntil: Joi.string(),
     phone: Joi.string().required(),
     socialMedia: Joi.object({
         facebook : Joi.string(),
