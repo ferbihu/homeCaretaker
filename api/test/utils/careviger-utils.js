@@ -7,8 +7,8 @@ const createCarevigerMock = async(data) =>{
         email:"fer@gmail",
         descriptionJob:"careviger papa",
         phone:"123121",
-        dateAvailableFrom: "12-05-25",
-        dateAvailableUntil: "05-12-28",
+        dateAvailableFrom: "22-09-28",
+        dateAvailableUntil: "05-08-30",
         socialMedia:{
             facebook:"facebook",
             instagram:"instagram",

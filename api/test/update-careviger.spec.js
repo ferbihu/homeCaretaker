@@ -1,10 +1,16 @@
 const request = require('supertest');
 const { server } = require('../index');
 const {createCarevigerMock} = require('./utils/careviger-utils');
+const {regenerateTable} = require('./utils/dynamodb');
+
 
 describe('/profile_change/:email', ()=>{
     afterAll(async()=>{
         await server.close();
+    });
+
+    afterEach(async()=>{
+        await regenerateTable();
     });
 
     it('should return 200 when user change cualquier dato de su perfil', async()=>{

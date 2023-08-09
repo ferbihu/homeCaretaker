@@ -1,5 +1,7 @@
 const request = require('supertest');
 const { server } = require('../index');
+const {regenerateTable} = require('./utils/dynamodb');
+
 
 
 describe('test create caraviger', ()=>{
@@ -8,6 +10,9 @@ describe('test create caraviger', ()=>{
         await server.close();
     });
 
+    afterEach(async()=>{
+        await regenerateTable();
+    });
 
     it('should return 200 when create careviger', async()=>{
         const body = {
@@ -16,7 +21,8 @@ describe('test create caraviger', ()=>{
             "email": "klobimba@gmail.com",
             "phone": "1231231231231",
             "descriptionJob": "que volaba",
-            "dateAvailable": "15-03-2024",
+            "dateAvailableFrom": "25-03-2023",
+            "dateAvailableUntil": "30-10-2024",
             "socialMedia": {
                 "facebook" : "https://joi.dev/api/?v=17.9.1#date",
                 "twitter": "https://joi.dev/api/?v=17.9.1#date",
@@ -28,6 +34,7 @@ describe('test create caraviger', ()=>{
     });
 
     it('deberia tirar algun error cuando el body no este completo con los campos requeridos', async()=>{
+        //este test tiene que devolver un error
         const body = {
             "email": "ariklo@gmail.com",
             "name":"ari",
