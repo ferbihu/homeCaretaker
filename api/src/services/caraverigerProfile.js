@@ -49,8 +49,8 @@ const updateCareviger = async(data) =>{
             ...(data.name && {"#n": "name"}),
             ...(data.lastName && {"#l" : "lastName"}),
             ...(data.descriptionJob && {"#descriptionJob": "descriptionJob"}),
-            ...(data.dateAvailableFrom && {"#dAvailableF":"dateAvailableF"}),
-            ...(data.dateAvailableUntil && {"#dAvailableU":"dateAvailableU"}),
+            ...(data.dateAvailableFrom && {"#dAvailableF":"dateAvailableFrom"}),
+            ...(data.dateAvailableUntil && {"#dAvailableU":"dateAvailableUntil"}),
             ...(data.phone && {"#phone":"phone"}),
             ...(data.socialMedia && { "#socialMedia": "socialMedia"})
         }
@@ -98,7 +98,7 @@ const searchCarevigerByDateAvailable = async(dateAvailableFrom,dateAvailableUnti
         ":dAvailableF" : {S: dateAvailableFrom},
         ":dAvailableU" : {S:dateAvailableUntil}
     },
-    FilterExpression: "#dAvailableF = :dAvailableF AND #dAvailableU = :dAvailableU",
+    FilterExpression: "#dAvailableF >= :dAvailableF AND #dAvailableU <= :dAvailableU",
     ProjectionExpression: "#dAvailableF, #dAvailableU, #email, #n, #l, #phone",
     TableName: process.env.TABLE_NAME_DYNAMODB
     }
